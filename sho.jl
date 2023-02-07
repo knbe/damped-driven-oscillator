@@ -1,5 +1,7 @@
 using Plots
 using DifferentialEquations
+using GLMakie
+using GLFW
 
 function run()
 	include("sho.jl")
@@ -96,5 +98,34 @@ m = initialize!(
 	v0 = 0.0
 	)
 
-run_integrator()
+#run_integrator()
 #run_solver()
+
+function makefig()
+	points = Observable(Point2f[(m.t, m.particle.x[1])])
+	#f = Figure()
+	#figureaxisplot = meshscatter(points)
+	#figure = figureaxisplot.figure
+	#fig, ax = lines(points)
+	#figure, axis, plot_object = scatter(points)
+
+	GLMakie.activate!()
+	scene = Scene(resolution=(550,550))
+	meshscatter!(scene, points)
+	pl = scene[end]
+
+	screen = display(scene)
+	#GLMakie.start_renderloop!(screen)
+	#GLMakie.render_frame(screen)
+
+	for i in 1:200
+		#new_point = Point2f(i, i)
+		#points[] = push!(points[], new_point)
+
+		meshscatter!(scene, points)
+		#screen = display(scene)
+		#GLMakie.render_frame(screen)
+	end
+end
+
+#makefig()

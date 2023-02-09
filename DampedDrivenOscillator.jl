@@ -1,16 +1,15 @@
 # the damped driven oscillator.
+# for P2600
 
 # usage: set parameters in the initialize!() function call at the 
 # bottom of the script. this constructs a "manifold" type with the 
 # relevant SHO parameters.
 
 # you can run the simulation using either the ODE solver from the 
-# DiffEqs package OR by numerical integration. 
+# DiffEqs package or by numerical integration.
 
 # the function call run_renderer() will evolve the system and produce
-# a real time rendering of the graphs with GLMakie. the only issue is
-# GLMakie needs to interact with the windowing system on your computer
-# so it won't necessarily work right away. 
+# a real time rendering of the graphs with GLMakie. 
 
 using Plots
 using DifferentialEquations
@@ -36,7 +35,7 @@ mutable struct Manifold
 	particle::Particle	# particle on the manifold
 end
 
-# set simulation variables and SHO parameters in the manifold
+# returns a manifold type with simulation parameters specified
 function initialize!(;dt::Float64, tt::Float64, ω0::Float64, ω::Float64, 
 		b::Float64, c::Float64, A::Float64, x0::Float64, v0::Float64)
 	nt = Int64(tt/dt)
@@ -56,10 +55,10 @@ function get_acceleration(m::Manifold, t::Int64)
 end
 
 function get_energy(m::Manifold, t::Int64)
-	e_potential = 0.5 * (m.ω0)^2 * m.particle.x[t]^2 + 
+	PE = 0.5 * (m.ω0)^2 * m.particle.x[t]^2 + 
 		0.25 * m.c * m.particle.x[t]^4
-	e_kinetic = 0.5 * m.particle.v[t]^2
-	return e_kinetic + e_potential
+	KE = 0.5 * m.particle.v[t]^2
+	return EK + EP
 end
 
 # euler integrator
@@ -71,7 +70,7 @@ end
 
 # velocity verlet integrator
 function integrate_verlet!(m::Manifold, accel::Float64, t::Int64)
-	# having an if statement in the integration loop is bad for performance
+	# this is a terrible place to put an if statement
 	# should change this so the first verlet step is outside the loop
 	if t == 1
 		m.particle.v[t+1] = m.particle.v[t] + accel * m.dt * 0.5

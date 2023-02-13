@@ -70,7 +70,7 @@ end
 
 # velocity verlet integrator
 function integrate_verlet!(m::Manifold, accel::Float64, t::Int64)
-	# this is a terrible place to put an if statement
+	# admittedly, this is a terrible place to put an if statement
 	# should change this so the first verlet step is outside the loop
 	if t == 1
 		m.particle.v[t+1] = m.particle.v[t] + accel * m.dt * 0.5
